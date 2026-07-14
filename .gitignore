@@ -13,6 +13,9 @@ runs/
 test/*.fastq.gz
 test/hisat2_index/
 
+# AI Assistant
+CLAUDE.md
+
 # IDE
 .idea/
 .vscode/
