@@ -1,0 +1,18 @@
+# Nextflow
+work/
+.nextflow/
+.nextflow.log*
+.nf-test/
+
+# Results
+results/
+test_results/
+runs/
+
+# Test data — 模拟 reads 和预建索引不提交
+test/*.fastq.gz
+test/hisat2_index/
+
+# IDE
+.idea/
+.vscode/

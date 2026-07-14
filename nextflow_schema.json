@@ -1,0 +1,184 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/Muyi-bioinfo/nextflow-rnaseq",
+    "title": "nextflow-rnaseq",
+    "description": "RNA-seq upstream analysis: FastQC → Trimmomatic → HISAT2 → featureCounts → MultiQC → DESeq2 → clusterProfiler",
+    "type": "object",
+    "definitions": {
+        "input_output": {
+            "title": "Input/output options",
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(csv|tsv|txt)$",
+                    "description": "Path to samplesheet CSV/TSV file (columns: sample,group,fastq_1[,fastq_2])"
+                },
+                "read_mode": {
+                    "type": "string",
+                    "enum": ["paired", "single"],
+                    "default": "paired",
+                    "description": "Read mode: paired-end or single-end"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "./results",
+                    "description": "Output directory for all results"
+                }
+            },
+            "required": ["input"]
+        },
+        "reference_genome": {
+            "title": "Reference genome options",
+            "type": "object",
+            "properties": {
+                "genome_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(fa|fasta|fna)(\\.gz)?$",
+                    "description": "Path to reference genome FASTA file"
+                },
+                "annotation_gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
+                    "description": "Path to gene annotation GTF file"
+                },
+                "hisat2_index_prefix": {
+                    "type": "string",
+                    "description": "HISAT2 index basename (auto-derived from genome_fasta if not set)"
+                },
+                "adapter_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to adapter FASTA for Trimmomatic ILLUMINACLIP (uses /dev/null if not set)"
+                }
+            },
+            "required": ["genome_fasta", "annotation_gtf"]
+        },
+        "fastqc": {
+            "title": "FastQC options",
+            "type": "object",
+            "properties": {
+                "fastqc": {
+                    "type": "object",
+                    "properties": {
+                        "extra": { "type": "string", "default": "" }
+                    }
+                }
+            }
+        },
+        "trimmomatic": {
+            "title": "Trimmomatic options",
+            "type": "object",
+            "properties": {
+                "trimmomatic": {
+                    "type": "object",
+                    "properties": {
+                        "illuminaclip": { "type": "string", "default": "2:30:10" },
+                        "leading": { "type": "integer", "default": 3 },
+                        "trailing": { "type": "integer", "default": 3 },
+                        "slidingwindow": { "type": "string", "default": "4:15" },
+                        "minlen": { "type": "integer", "default": 36 }
+                    }
+                }
+            }
+        },
+        "hisat2": {
+            "title": "HISAT2 options",
+            "type": "object",
+            "properties": {
+                "hisat2": {
+                    "type": "object",
+                    "properties": {
+                        "extra": { "type": "string", "default": "" }
+                    }
+                }
+            }
+        },
+        "featurecounts": {
+            "title": "featureCounts options",
+            "type": "object",
+            "properties": {
+                "featurecounts": {
+                    "type": "object",
+                    "properties": {
+                        "feature_type": { "type": "string", "default": "exon" },
+                        "attr_type": { "type": "string", "default": "gene_id" },
+                        "strandedness": { "type": "integer", "enum": [0, 1, 2], "default": 0 },
+                        "extra": { "type": "string", "default": "" }
+                    }
+                }
+            }
+        },
+        "deseq2": {
+            "title": "DESeq2 options",
+            "type": "object",
+            "properties": {
+                "deseq2": {
+                    "type": "object",
+                    "properties": {
+                        "padj_threshold": { "type": "number", "default": 0.05 },
+                        "log2fc_threshold": { "type": "number", "default": 1.0 },
+                        "independent_filtering": { "type": "boolean", "default": true },
+                        "vst_blind": { "type": "boolean", "default": true },
+                        "top_n_genes": { "type": "integer", "default": 50 },
+                        "contrasts": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { "type": "string" },
+                                    "case": { "type": "string" },
+                                    "control": { "type": "string" }
+                                },
+                                "required": ["name", "case", "control"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "clusterprofiler": {
+            "title": "clusterProfiler options",
+            "type": "object",
+            "properties": {
+                "clusterprofiler": {
+                    "type": "object",
+                    "properties": {
+                        "org_db": { "type": "string", "default": "org.Hs.eg.db" },
+                        "kegg_organism": { "type": "string", "default": "hsa" },
+                        "from_type": { "type": "string", "default": "ENSEMBL" },
+                        "pvalue_cutoff": { "type": "number", "default": 0.05 },
+                        "qvalue_cutoff": { "type": "number", "default": 0.2 },
+                        "show_category": { "type": "integer", "default": 15 },
+                        "gene_id_col": { "type": "string", "default": "gene_id" }
+                    }
+                }
+            }
+        }
+    },
+    "allOf": [
+        { "$ref": "#/definitions/input_output" },
+        { "$ref": "#/definitions/reference_genome" },
+        { "$ref": "#/definitions/fastqc" },
+        { "$ref": "#/definitions/trimmomatic" },
+        { "$ref": "#/definitions/hisat2" },
+        { "$ref": "#/definitions/featurecounts" },
+        { "$ref": "#/definitions/deseq2" },
+        { "$ref": "#/definitions/clusterprofiler" }
+    ],
+    "properties": {
+        "help": {
+            "type": "boolean",
+            "description": "Display help text"
+        },
+        "validate_params": {
+            "type": "boolean",
+            "default": true,
+            "description": "Validate parameters against the JSON schema"
+        }
+    }
+}

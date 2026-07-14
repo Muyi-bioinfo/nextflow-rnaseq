@@ -1,0 +1,5 @@
+sample,group,fastq_1,fastq_2
+WT_1,WT,/path/to/raw/WT_1_R1.fastq.gz,/path/to/raw/WT_1_R2.fastq.gz
+WT_2,WT,/path/to/raw/WT_2_R1.fastq.gz,/path/to/raw/WT_2_R2.fastq.gz
+KO_1,KO,/path/to/raw/KO_1_R1.fastq.gz,/path/to/raw/KO_1_R2.fastq.gz
+KO_2,KO,/path/to/raw/KO_2_R1.fastq.gz,/path/to/raw/KO_2_R2.fastq.gz

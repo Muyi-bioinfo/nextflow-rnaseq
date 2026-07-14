@@ -1,0 +1,5 @@
+sample,group,fastq_1,fastq_2
+WT_1,WT,test/WT_1_R1.fastq.gz,test/WT_1_R2.fastq.gz
+WT_2,WT,test/WT_2_R1.fastq.gz,test/WT_2_R2.fastq.gz
+KO_1,KO,test/KO_1_R1.fastq.gz,test/KO_1_R2.fastq.gz
+KO_2,KO,test/KO_2_R1.fastq.gz,test/KO_2_R2.fastq.gz
