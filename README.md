@@ -25,6 +25,8 @@ A Nextflow DSL2 RNA-seq analysis pipeline covering raw FASTQ QC through differen
 - **Reproducible** — pinned tool versions in unified container image
 - **Extensible** — add samples or contrasts without touching workflow code
 
+📖 **[Nextflow Learning Guide](LEARNING_NEXTFLOW.md)** — Learn Nextflow core concepts from this project's actual code (in Chinese)
+
 ## Quick Start
 
 ```bash
